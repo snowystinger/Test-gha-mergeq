@@ -11,15 +11,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./
-        with:
-          addHoldComment: "true"
       - run: npm ci
       - run: npm test
-      # If something fails I want to set the status commit to "error" without adding anymore comments
-      # I'm happy to leave the PR with `/hold` if there is an error
-      - if: always()
-        uses: ./
-        with:
-          addHoldComment: "true"
-          status: "${{ job.status }}"
