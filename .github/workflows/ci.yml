@@ -1,0 +1,16 @@
+# Based on https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml
+name: CI
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: 'npm'
+      - run: echo 'hello world'
