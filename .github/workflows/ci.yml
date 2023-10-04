@@ -1,16 +1,25 @@
-# Based on https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml
-name: CI
-on:
-  pull_request:
-    branches:
-      - main
+name: PR Build and test
+
+on: [pull_request]
+
+permissions:
+  statuses: write
+  pull-requests: write
+
 jobs:
-  ci:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: ./
         with:
-          node-version: lts/*
-          cache: 'npm'
-      - run: echo 'hello world'
+          addHoldComment: "true"
+      - run: npm ci
+      - run: npm test
+      # If something fails I want to set the status commit to "error" without adding anymore comments
+      # I'm happy to leave the PR with `/hold` if there is an error
+      - if: always()
+        uses: ./
+        with:
+          addHoldComment: "true"
+          status: "${{ job.status }}"
